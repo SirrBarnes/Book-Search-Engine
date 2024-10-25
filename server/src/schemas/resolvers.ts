@@ -1,5 +1,5 @@
-import { User } from '../models/index';
-import { signToken, AuthenticationError } from '../services/auth';
+import { User } from '../models/index.js';
+import { signToken, AuthenticationError } from '../services/auth.js';
 
 interface AddUserArgs {
     input:{
@@ -51,7 +51,7 @@ const resolvers = {
     },
 
     Mutation: {
-        createUser: async (_parent: any, { input }: AddUserArgs) => {
+        addUser: async (_parent: any, { input }: AddUserArgs) => {
             const user = await User.create({ ...input });
 
             const token = signToken(user.username, user.email, user._id);
@@ -95,7 +95,7 @@ const resolvers = {
             throw AuthenticationError;
         },
 
-        deleteBook: async (_parent: any, { userId, bookId }: RemoveBookArgs, context: any) => {
+        removeBook: async (_parent: any, { userId, bookId }: RemoveBookArgs, context: any) => {
             if (context.user) {
                 return User.findOneAndUpdate(
                     { _id: userId },

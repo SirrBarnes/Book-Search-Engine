@@ -58,6 +58,10 @@ export const REMOVE_BOOK = gql`
     }
 `
 
-export const SEARCH_GOOGLE_BOOKS = gql`
+// export const SEARCH_GOOGLE_BOOKS = gql`
 
-`
+// `
+
+export const SEARCH_GOOGLE_BOOKS = (query: string) => {
+    return fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+};
