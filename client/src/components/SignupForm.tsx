@@ -1,13 +1,13 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
 import Auth from '../utils/auth';
-import type { User } from '../models/User';
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
 
 const SignupForm = ({ }: { handleModalClose: () => void }) => {
-    const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+    const [userFormData, setUserFormData] = useState({ 
+        username: '', email: '', password: ''
+    });
 
     const [validated] = useState(false);
     // set state for alert
@@ -39,13 +39,6 @@ const SignupForm = ({ }: { handleModalClose: () => void }) => {
             console.error(error);
             setShowAlert(true);
         }
-
-        setUserFormData({
-            username: '',
-            email: '',
-            password: '',
-            savedBooks: [],
-        });
     };
 
     return (

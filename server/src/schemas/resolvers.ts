@@ -39,12 +39,12 @@ interface RemoveBookArgs {
 const resolvers = {
     Query: {
         user: async(_parent: any, { username }: UserArgs) => {
-            return User.findOne({ username }).populate('books');
+            return User.findOne({ username }).populate('savedBooks');
         },
 
         me: async(_parent: any, _args: any, context: any) => {
             if (context.user) {
-                return User.findOne({ _id: context.user._id }).populate('books');
+                return User.findOne({ _id: context.user._id }).populate('savedBooks');
             }
             throw new AuthenticationError("Could not authenticate user");
         },
@@ -77,13 +77,15 @@ const resolvers = {
             return { token, user };
         },
 
-        saveBook: async (_parent: any, { userId, input }: AddBookArgs, context: any) => {
+        saveBook: async (_parent: any, { input }: AddBookArgs, context: any) => {
             if (context.user) {
-                return User.findOneAndUpdate(
-                    { _id: userId }, 
+                // console.log("I'm here, trying");
+
+                return await User.findOneAndUpdate(
+                    { _id: context.user._id }, 
                     { 
                         $addToSet: {
-                        savedBooks: { input },
+                        savedBooks: input,
                         },
                     },
                     {
@@ -95,15 +97,13 @@ const resolvers = {
             throw AuthenticationError;
         },
 
-        removeBook: async (_parent: any, { userId, bookId }: RemoveBookArgs, context: any) => {
+        removeBook: async (_parent: any, { bookId }: RemoveBookArgs, context: any) => {
             if (context.user) {
-                return User.findOneAndUpdate(
-                    { _id: userId },
+                return await User.findOneAndUpdate(
+                    { _id: context.user._id },
                     {
                         $pull: {
-                            savedBooks: {
-                                bookId
-                            },
+                            savedBooks: bookId
                         },
                     },
                     { new: true }

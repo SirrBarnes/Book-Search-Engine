@@ -7,11 +7,11 @@ import { useMutation } from '@apollo/client';
 
 const LoginForm = ({}: { handleModalClose: () => void }) => {
     const [userFormData, setUserFormData] = useState<User>({
-        username: '',
-        email: '', password: '', savedBooks: []
+        username: '', email: '', password: '', savedBooks: []
     });
     const [validated] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    
     const [login] = useMutation(LOGIN_USER);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {

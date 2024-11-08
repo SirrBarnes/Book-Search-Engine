@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const authenticateToken = ({ req }: any) => {
-    let token = req.body.token || req.query.token || req.headers.authoriztion;
+    let token = req.body.token || req.query.token || req.headers.authorization;
 
-    if(req.headers.auhtorization) {
+    if(req.headers.authorization) {
         token = token.split(' ').pop().trim();
     }
 

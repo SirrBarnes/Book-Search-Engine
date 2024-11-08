@@ -22,63 +22,60 @@ const SearchBooks = () => {
     const [searchInput, setSearchInput] = useState('');
     const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
     const [saveBook] = useMutation(SAVE_BOOK);
-    
+
     useEffect(() => {
         return () => saveBookIds(savedBookIds);
     });
 
     const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-    
+
         if (!searchInput) {
-          return false;
+            return false;
         }
-    
+
         try {
-          const response = await SEARCH_GOOGLE_BOOKS(searchInput);
-    
-          if (!response.ok) {
-            throw new Error('something went wrong!');
-          }
-    
-          const { items } = await response.json();
-    
-          const bookData = items.map((book: GoogleAPIBook) => ({
-            bookId: book.id,
-            authors: book.volumeInfo.authors || ['No author to display'],
-            title: book.volumeInfo.title,
-            description: book.volumeInfo.description,
-            image: book.volumeInfo.imageLinks?.thumbnail || '',
-          }));
-    
-          setSearchedBooks(bookData);
-          setSearchInput('');
+            const response = await SEARCH_GOOGLE_BOOKS(searchInput);
+
+            if (!response.ok) {
+                throw new Error('something went wrong!');
+            }
+
+            const { items } = await response.json();
+
+            const bookData = items.map((book: GoogleAPIBook) => ({
+                bookId: book.id,
+                authors: book.volumeInfo.authors || ['No author to display'],
+                title: book.volumeInfo.title,
+                description: book.volumeInfo.description,
+                image: book.volumeInfo.imageLinks?.thumbnail || '',
+            }));
+
+            setSearchedBooks(bookData);
+            setSearchInput('');
         } catch (err) {
-          console.error(err);
+            console.error(err);
         }
-      };
+    };
 
     const handleSaveBook = async (bookId: string) => {
         const bookToSave: Book = searchedBooks.find((book) => book.bookId === bookId)!;
 
         const token = Auth.loggedIn() ? Auth.getToken() : null;
 
+
         if (!token) {
             return false;
         }
 
         try {
-            const { data } = await saveBook({
+            await saveBook({
                 variables: { input: { ...bookToSave } },
             });
 
-            if (!data.ok) {
-                throw new Error('something went wrong!');
-            }
-
             setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-        } catch(error) {
-            console.error(error);
+        } catch (error) {
+            console.error("Error saving book: ", error);
         }
     };
 
@@ -145,7 +142,7 @@ const SearchBooks = () => {
                 </Row>
             </Container>
         </>
-    )
+    );
 }
 
 export default SearchBooks;
